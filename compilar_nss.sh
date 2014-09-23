@@ -19,6 +19,7 @@ python ~/public_html/certificados_iceweasel/get_certificados/descargar_certifica
 echo " "
 echo "Obteniendo código fuente de nss y nspr"
 cd ~/public_html/certificados_iceweasel/paquetes/
+rm -rf ~/public_html/certificados_iceweasel/get_certificados/
 apt-get source nss nspr
 
 cd nss-3.14.5/
