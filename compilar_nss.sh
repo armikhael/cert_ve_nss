@@ -32,7 +32,7 @@ git add .
 git commit -a -m "Versión original del código fuente."
 
 cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/
-ln -s ../../nspr-4.9.2/mozilla/nsprpub/ .
+ln -s ~/public_html/certificados_iceweasel/paquetes/nspr-4.9.2/mozilla/nsprpub/ .
 
 COMMAND=`uname -r`
 echo $LIST
@@ -87,6 +87,7 @@ git reset --hard
 git clean -fd
 
 version=`dpkg-parsechangelog | grep "Version:" | awk '{print $2}'`
+version=`echo $version | cut -d \: -f 2`
 
 git tag debian/$version
 
