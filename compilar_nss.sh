@@ -1,17 +1,22 @@
 #!/usr/bin/env bash
+
 mkdir -p ~/public_html/certificados_iceweasel/certificados/
-
-echo "Obteniendo certificados"
-cd ~/public_html/certificados_iceweasel/certificados/
-wget -c https://github.com/suscerte/descargar_certificados/blob/master/download_certificates.py
-python download_certificates.py
-
-# Saliendo del directorio certificados/
-cd ../
-
+mkdir -p ~/public_html/certificados_iceweasel/paquetes/
 cd ~/public_html/certificados_iceweasel/
 
+echo "Iniciando procedimiento para obtencion del certificado"
+echo "Es necesario tener git instalado"
+su -c "aptitude install git"
+git clone https://gist.github.com/Axelio/0a86cddf72dadfd43426 get_certificados
+
+echo " "
+echo "Descargando los siguientes certificados:"
+cd certificados/
+python ~/public_html/certificados_iceweasel/get_certificados/descargar_certificados.py
+
+echo " "
 echo "Obteniendo código fuente de nss y nspr"
+cd ~/public_html/certificados_iceweasel/paquetes/
 apt-get source nss nspr
 
 cd nss-3.14.5/
