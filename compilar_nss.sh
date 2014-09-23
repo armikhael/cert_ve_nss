@@ -67,10 +67,6 @@ echo " "
 echo "Convirtiendo los certificados con addbuiltin"
 cd ~/public_html/certificados_iceweasel/certificados/
 
-for certificado in `ls *.cer`;
-do openssl x509 -inform PEM -outform DER -in CERTIFICADO-RAIZ-SHA384.crt -out CERTIFICADO-RAIZ-SHA384.der
-
-
 CERTIFICADOS=`ls *.crt`
 
 for certificado in $CERTIFICADOS
@@ -81,5 +77,5 @@ for certificado in $CERTIFICADOS
         O=`echo $comando| cut -d \O -f 2`
         O=`echo $O| cut -d \= -f 2`
         O=`echo $O| cut -d \, -f 1`
-        comando=`cat CERTIFICADO-RAIZ-SHA384.der | addbuiltin -n "$O" -t "C,C,C" > $nombre.nss`
+        comando=`cat $nombre.der | addbuiltin -n "$O" -t "C,C,C" > $nombre.nss`
 done
