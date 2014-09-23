@@ -5,7 +5,7 @@ mkdir -p ~/public_html/certificados_iceweasel/paquetes/
 cd ~/public_html/certificados_iceweasel/
 
 echo "Instalando dependencias necesarias"
-su -c "aptitude install git git-buildpackage build-essential quilt"
+su -c "aptitude install git git-buildpackage build-essential quilt libc6-dev-i386"
 
 echo " "
 echo "Iniciando procedimiento para obtencion del certificado"
