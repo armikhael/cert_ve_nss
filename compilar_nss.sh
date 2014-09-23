@@ -79,3 +79,49 @@ for certificado in $CERTIFICADOS
         O=`echo $O| cut -d \, -f 1`
         comando=`cat $nombre.der | addbuiltin -n "$O" -t "C,C,C" > $nombre.nss`
 done
+
+echo " "
+echo "Parcheando y reempaquetando NSS"
+cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/
+git reset --hard
+git clean -fd
+
+version=`dpkg-parsechangelog | grep "Version:" | awk '{print $2}'`
+
+git tag debian/$version
+
+cd ~/public_html/certificados_iceweasel/certificados/
+
+CERTIFICADOS=`ls *.nss`
+
+for certificado in $CERTIFICADOS
+    do
+        cat $certificado >> ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/lib/ckfw/builtins/certdata.txt
+done
+
+cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/lib/ckfw/builtins/
+make generate
+
+
+cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/
+mkdir -p debian/patches
+
+echo " "
+echo "Generando parches"
+git diff > ../99_ACR-certificates.patch
+git reset --hard
+git clean -fd
+mv ../99_ACR-certificates.patch debian/patches/
+echo "99_ACR-certificates.patch" >> debian/patches/series
+
+echo " "
+echo "Comprobando parches"
+export QUILT_PATCHES=debian/patches
+quilt push -af
+quilt refresh
+rm -rf mozilla/security/nss/lib/ckfw/builtins/certdata.c.rej
+quilt pop -a
+
+git add .
+git commit -am "Agregando parche para los certificados aprobados por SUSCERTE"
+git-buildpackage -us -uc
