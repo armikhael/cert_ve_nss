@@ -4,9 +4,11 @@ mkdir -p ~/public_html/certificados_iceweasel/certificados/
 mkdir -p ~/public_html/certificados_iceweasel/paquetes/
 cd ~/public_html/certificados_iceweasel/
 
+echo "Instalando dependencias necesarias"
+su -c "aptitude install git git-buildpackage build-essential quilt"
+
+echo " "
 echo "Iniciando procedimiento para obtencion del certificado"
-echo "Es necesario tener git instalado"
-su -c "aptitude install git"
 git clone https://gist.github.com/Axelio/0a86cddf72dadfd43426 get_certificados
 
 echo " "
