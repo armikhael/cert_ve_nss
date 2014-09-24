@@ -5,7 +5,7 @@ mkdir -p ~/public_html/certificados_iceweasel/paquetes/
 cd ~/public_html/certificados_iceweasel/
 
 echo "Instalando dependencias necesarias"
-su -c "aptitude install git git-buildpackage build-essential quilt libc6-dev-i386 lib32z1-dev"
+su -c "aptitude install git git-buildpackage build-essential quilt libc6-dev-i386 lib32z1-dev libnspr4-dev libsqlite3-dev"
 
 echo " "
 echo "Iniciando procedimiento para obtencion del certificado"
@@ -38,30 +38,31 @@ COMMAND=`uname -r`
 echo $LIST
 ARCH="amd64"
 
-if echo "$COMMAND" | grep -q "$SOURCE"; then
-    cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/
-    make nss_build_all BUILD_OPT=1 USE_64=1
+su -c '
+    if echo "$COMMAND" | grep -q "$SOURCE"; then
+        cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/
+        make nss_build_all BUILD_OPT=1 USE_64=1
 
-    cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/cmd/addbuiltin/
-    make BUILD_OPT=1 USE_64=1
+        cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/cmd/addbuiltin/
+        make BUILD_OPT=1 USE_64=1
 
-    echo " "
-    echo "Se copiará Linux3.2_x86_64_glibc_PTH_64_OPT.OBJ a /usr/bin/"
-    echo "Se debe ejecutar como super usuario"
-    su -c "cp -v Linux3.2_x86_64_glibc_PTH_64_OPT.OBJ/addbuiltin /usr/bin/"
-else
-    cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/
-    make nss_build_all BUILD_OPT=1
+        echo " "
+        echo "Se copiará Linux3.2_x86_64_glibc_PTH_64_OPT.OBJ a /usr/bin/"
+        echo "Se debe ejecutar como super usuario"
+        cp -v Linux3.2_x86_64_glibc_PTH_64_OPT.OBJ/addbuiltin /usr/bin/"
+    else
+        cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/
+        make nss_build_all BUILD_OPT=1
 
-    cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/cmd/addbuiltin/
-    make BUILD_OPT=1
+        cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/cmd/addbuiltin/
+        make BUILD_OPT=1
 
-    echo " "
-    echo "Se copiará Linux3.2_x86_glibc_PTH_OPT.OBJ a /usr/bin/"
-    echo "Se debe ejecutar como super usuario"
-    su -c "cp -v Linux3.2_x86_glibc_PTH_OPT.OBJ/addbuiltin /usr/bin/"
-fi
-
+        echo " "
+        echo "Se copiará Linux3.2_x86_glibc_PTH_OPT.OBJ a /usr/bin/"
+        echo "Se debe ejecutar como super usuario"
+        su -c "cp -v Linux3.2_x86_glibc_PTH_OPT.OBJ/addbuiltin /usr/bin/"
+    fi
+'
 
 echo " "
 echo "Convirtiendo los certificados con addbuiltin"
