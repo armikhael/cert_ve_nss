@@ -4,8 +4,14 @@ mkdir -p ~/public_html/certificados_iceweasel/certificados/
 mkdir -p ~/public_html/certificados_iceweasel/paquetes/
 cd ~/public_html/certificados_iceweasel/
 
+ARCH="amd64"
+COMMAND=`uname -r`
 echo "Instalando dependencias necesarias"
-su -c "aptitude install git git-buildpackage build-essential quilt libc6-dev-i386 lib32z1-dev libnspr4-dev libsqlite3-dev"
+if echo "$COMMAND" | grep -q "$SOURCE"; then
+    su -c "aptitude install git git-buildpackage build-essential quilt libc6-dev-i386 lib32z1-dev libnspr4-dev libsqlite3-dev"
+else
+    su -c "aptitude install git git-buildpackage build-essential quilt libc6-dev-amd64 lib64z1-dev libnspr4-dev libsqlite3-dev"
+fi
 
 echo " "
 echo "Iniciando procedimiento para obtencion del certificado"
@@ -34,9 +40,7 @@ git commit -a -m "Versión original del código fuente."
 cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/
 ln -s ~/public_html/certificados_iceweasel/paquetes/nspr-4.9.2/mozilla/nsprpub/ .
 
-COMMAND=`uname -r`
 echo $LIST
-ARCH="amd64"
 
 su -c '
     if echo "$COMMAND" | grep -q "$SOURCE"; then
