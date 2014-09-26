@@ -28,7 +28,10 @@ cd ~/public_html/certificados_iceweasel/paquetes/
 rm -rf ~/public_html/certificados_iceweasel/get_certificados/
 apt-get source nss nspr
 
-cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/
+VERSION_NSS=`ls -d */ | grep nss | cut -d \- -f 2 | cut -d \/ -f 1`
+VERSION_NSPR=`ls -d */ | grep nspr | cut -d \- -f 2 | cut -d \/ -f 1`
+
+cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/
 export QUILT_PATCHES=debian/patches
 quilt pop -a
 
@@ -37,17 +40,17 @@ git init
 git add .
 git commit -a -m "Versión original del código fuente."
 
-cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/
-ln -s ~/public_html/certificados_iceweasel/paquetes/nspr-4.9.2/mozilla/nsprpub/ .
+cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/mozilla/
+ln -s ~/public_html/certificados_iceweasel/paquetes/nspr-$VERSION_NSPR/mozilla/nsprpub/ .
 
 echo $LIST
 
 su -c '
     if echo "$COMMAND" | grep -q "$SOURCE"; then
-        cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/
+        cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/mozilla/security/nss/
         make nss_build_all BUILD_OPT=1 USE_64=1
 
-        cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/cmd/addbuiltin/
+        cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/mozilla/security/nss/cmd/addbuiltin/
         make BUILD_OPT=1 USE_64=1
 
         echo " "
@@ -55,10 +58,10 @@ su -c '
         echo "Se debe ejecutar como super usuario"
         cp -v Linux3.2_x86_64_glibc_PTH_64_OPT.OBJ/addbuiltin /usr/bin/"
     else
-        cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/
+        cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/mozilla/security/nss/
         make nss_build_all BUILD_OPT=1
 
-        cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/cmd/addbuiltin/
+        cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/mozilla/security/nss/cmd/addbuiltin/
         make BUILD_OPT=1
 
         echo " "
@@ -79,15 +82,13 @@ for certificado in $CERTIFICADOS
         nombre=`echo $certificado | cut -d \. -f 1`
         openssl x509 -inform PEM -outform DER -in $certificado -out $nombre.der
         comando=`openssl x509 -inform PEM -text -in $certificado | grep "Subject"`
-        O=`echo $comando| cut -d \O -f 2`
-        O=`echo $O| cut -d \= -f 2`
-        O=`echo $O| cut -d \, -f 1`
+        O=`echo $comando | cut -d \O -f 2 | cut -d \= -f 2 | cut -d \, -f 1`
         comando=`cat $nombre.der | addbuiltin -n "$O" -t "C,C,C" > $nombre.nss`
 done
 
 echo " "
 echo "Parcheando y reempaquetando NSS"
-cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/
+cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/
 git reset --hard
 git clean -fd
 
@@ -102,14 +103,14 @@ CERTIFICADOS=`ls *.nss`
 
 for certificado in $CERTIFICADOS
     do
-        cat $certificado >> ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/lib/ckfw/builtins/certdata.txt
+        cat $certificado >> ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/mozilla/security/nss/lib/ckfw/builtins/certdata.txt
 done
 
-cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/mozilla/security/nss/lib/ckfw/builtins/
+cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/mozilla/security/nss/lib/ckfw/builtins/
 make generate
 
 
-cd ~/public_html/certificados_iceweasel/paquetes/nss-3.14.5/
+cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/
 mkdir -p debian/patches
 
 echo " "
