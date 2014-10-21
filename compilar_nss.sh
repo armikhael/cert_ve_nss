@@ -43,16 +43,16 @@ git add .
 git commit -a -m "Versión original del código fuente."
  
 cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/mozilla/
-ln -s ~/public_html/certificados_iceweasel/paquetes/nspr-$VERSION_NSPR/mozilla/nsprpub/ .
+ln -s ~/public_html/certificados_iceweasel/paquetes/nspr-$VERSION_NSPR/nspr/ .
  
 echo $LIST
  
 su -c '
 if echo "$COMMAND" | grep -q "$SOURCE"; then
-cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/mozilla/security/nss/
+cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/nss/
 make nss_build_all BUILD_OPT=1 USE_64=1
  
-cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/mozilla/security/nss/cmd/addbuiltin/
+cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/nss/cmd/addbuiltin/
 make BUILD_OPT=1 USE_64=1
  
 echo " "
@@ -60,10 +60,10 @@ echo "Se copiará Linux3.2_x86_64_glibc_PTH_64_OPT.OBJ a /usr/bin/"
 echo "Se debe ejecutar como super usuario"
 cp -v Linux3.2_x86_64_glibc_PTH_64_OPT.OBJ/addbuiltin /usr/bin/"
 else
-cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/mozilla/security/nss/
+cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/nss/
 make nss_build_all BUILD_OPT=1
  
-cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/mozilla/security/nss/cmd/addbuiltin/
+cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/nss/cmd/addbuiltin/
 make BUILD_OPT=1
  
 echo " "
@@ -105,10 +105,10 @@ CERTIFICADOS=`ls *.nss`
  
 for certificado in $CERTIFICADOS
 do
-cat $certificado >> ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/mozilla/security/nss/lib/ckfw/builtins/certdata.txt
+cat $certificado >> ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/nss/lib/ckfw/builtins/certdata.txt
 done
  
-cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/mozilla/security/nss/lib/ckfw/builtins/
+cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/nss/lib/ckfw/builtins/
 make generate
  
  
@@ -128,7 +128,7 @@ EXITO "Comprobando parches"
 export QUILT_PATCHES=debian/patches
 quilt push -af
 quilt refresh
-rm -rf mozilla/security/nss/lib/ckfw/builtins/certdata.c.rej
+rm -rf nss/lib/ckfw/builtins/certdata.c.rej
 quilt pop -a
 rm -rf .pc
  
