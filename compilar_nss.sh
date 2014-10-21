@@ -42,7 +42,7 @@ git init
 git add .
 git commit -a -m "Versión original del código fuente."
  
-cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/mozilla/
+cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/
 ln -s ~/public_html/certificados_iceweasel/paquetes/nspr-$VERSION_NSPR/nspr/ .
  
 echo $LIST
