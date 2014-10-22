@@ -9,7 +9,7 @@ mkdir -p ~/public_html/certificados_iceweasel/paquetes/
 cd ~/public_html/certificados_iceweasel/
  
 EXITO "Instalando dependencias necesarias"
-su -c "aptitude update; aptitude install git git-buildpackage build-essential quilt libc6-dev zlib1g-dev libnspr4-dev libsqlite3-dev"
+# sudo aptitude update; aptitude install git git-buildpackage build-essential quilt libc6-dev zlib1g-dev libnspr4-dev libsqlite3-dev
  
 echo " "
 EXITO "Iniciando procedimiento para obtencion del certificado"
@@ -37,42 +37,45 @@ export QUILT_PATCHES=debian/patches
 quilt pop -a
 rm -rf .pc
  
-EXITO "Compilando la herramienta addbuiltin"
+EXITO "Versionando Nss"
 git init
 git add .
 git commit -a -m "Versión original del código fuente."
- 
+
+EXITO "Compilando la herramienta addbuiltin" 
 cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/
 ln -s ~/public_html/certificados_iceweasel/paquetes/nspr-$VERSION_NSPR/nspr/ .
  
 echo $LIST
- 
-su -c '
-if echo "$COMMAND" | grep -q "$SOURCE"; then
+
+ARCH=`arch`
+echo $ARCH
+
+if [ "x86_64" = "$ARCH" ]
+then
+EXITO "Arquitectura $ARCH"
 cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/nss/
 make nss_build_all BUILD_OPT=1 USE_64=1
  
 cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/nss/cmd/addbuiltin/
 make BUILD_OPT=1 USE_64=1
- 
-echo " "
-echo "Se copiará Linux3.2_x86_64_glibc_PTH_64_OPT.OBJ a /usr/bin/"
-echo "Se debe ejecutar como super usuario"
-cp -v Linux3.2_x86_64_glibc_PTH_64_OPT.OBJ/addbuiltin /usr/bin/"
+
 else
+EXITO "Arquitectura $ARCH"
 cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/nss/
 make nss_build_all BUILD_OPT=1
  
 cd ~/public_html/certificados_iceweasel/paquetes/nss-$VERSION_NSS/nss/cmd/addbuiltin/
 make BUILD_OPT=1
- 
-echo " "
-echo "Se copiará Linux3.2_x86_glibc_PTH_OPT.OBJ a /usr/bin/"
-echo "Se debe ejecutar como super usuario"
-su -c "cp -v Linux3.2_x86_glibc_PTH_OPT.OBJ/addbuiltin /usr/bin/"
+
 fi
-'
- 
+
+echo " "
+EXITO "Se copiará addbuiltin /usr/bin/"
+EXITO "Se debe ejecutar como super usuario"
+cd Linux*/
+sudo cp -v addbuiltin /usr/bin/
+
 echo " "
 EXITO "Convirtiendo los certificados con addbuiltin"
 cd ~/public_html/certificados_iceweasel/certificados/
