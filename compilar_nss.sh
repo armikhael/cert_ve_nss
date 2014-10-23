@@ -9,7 +9,7 @@ mkdir -p ~/public_html/certificados_iceweasel/paquetes/
 cd ~/public_html/certificados_iceweasel/
  
 EXITO "Instalando dependencias necesarias"
-# sudo aptitude update; aptitude install git git-buildpackage build-essential quilt libc6-dev zlib1g-dev libnspr4-dev libsqlite3-dev
+# sudo aptitude update; aptitude install git git-buildpackage build-essential quilt libnss3 libc6-dev zlib1g-dev libnspr4-dev libsqlite3-dev
  
 echo " "
 EXITO "Iniciando procedimiento para obtencion del certificado"
