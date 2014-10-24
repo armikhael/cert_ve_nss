@@ -141,4 +141,4 @@ git dch -N $VERSION_NSS_CHANGELOG+1canaima --auto --release --git-author --id-le
  
 git add .
 git commit -am "Agregando parche para los certificados aprobados por SUSCERTE"
-git-buildpackage -us -uc -j5
+git buildpackage -tc -us -uc --git-tag --git-retag -j5
