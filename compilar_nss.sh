@@ -137,7 +137,7 @@ rm -rf .pc
  
 echo " "
 EXITO "Subiendo de versión el paquete NSS"
-git dch -N $VERSION_NSS_CHANGELOG+1canaima --release --auto --id-length=7 --full --git-author
+git dch -N $VERSION_NSS_CHANGELOG+1canaima --auto --release --git-author --id-length=7 --commit
  
 git add .
 git commit -am "Agregando parche para los certificados aprobados por SUSCERTE"
